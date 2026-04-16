@@ -3,7 +3,24 @@
 [Try playing the game here.](https://ddorothy.itch.io/battleship "Battleship")
 
 ### Description
-A classic two-player Battleship game. The game is played locally (hot seat). <br>
+A classic two-player Battleship game. The game can be played **locally (hot seat)** or **online** via Mirror networking. <br>
+***
+### Online Multiplayer
+
+The game supports **online multiplayer** using [Mirror](https://mirror-networking.com/) networking.
+
+**How to play online:**
+1. One player clicks **Host Game** to start a server.
+2. The second player enters the host's IP address and clicks **Join Game**.
+3. Once both players are connected, ships are automatically placed by the server.
+4. Players take turns clicking tiles on the opponent's board to attack.
+5. Hits are shown in red, misses in grey. A hit lets the player attack again.
+6. The first player to sink all opponent ships wins!
+
+> **Note:** For internet play, the host must forward **port 7777 (UDP)** on their router, or use a tunnelling service like [ngrok](https://ngrok.com/). For local network play, both players must be on the same network.
+
+See [`Assets/Scripts/Network/SETUP_INSTRUCTIONS.md`](Assets/Scripts/Network/SETUP_INSTRUCTIONS.md) for detailed Unity Editor setup instructions.
+
 ***
 ### Gameplay
 At the beginning of the game the ships are randomly placed on the board for both players. <br>

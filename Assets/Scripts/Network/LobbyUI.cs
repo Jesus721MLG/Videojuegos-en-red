@@ -32,10 +32,17 @@ namespace Battleship
         [Header("In-Game HUD (visible during game)")]
         [SerializeField] TextMeshProUGUI  _turnText;
 
+        [Header("Disconnect / Back (optional)")]
+        [Tooltip("Button to disconnect and return to the main menu. " +
+                 "Leave empty if you don't need one.")]
+        [SerializeField] Button           _disconnectButton;
+
         void OnEnable()
         {
             _hostButton.onClick.AddListener(OnHostClicked);
             _joinButton.onClick.AddListener(OnJoinClicked);
+            if (_disconnectButton != null)
+                _disconnectButton.onClick.AddListener(OnDisconnectClicked);
 
             BattleshipPlayer.OnLobbyStatus        += HandleLobbyStatus;
             BattleshipPlayer.OnGameStarted         += HandleGameStarted;
@@ -48,6 +55,8 @@ namespace Battleship
         {
             _hostButton.onClick.RemoveListener(OnHostClicked);
             _joinButton.onClick.RemoveListener(OnJoinClicked);
+            if (_disconnectButton != null)
+                _disconnectButton.onClick.RemoveListener(OnDisconnectClicked);
 
             BattleshipPlayer.OnLobbyStatus        -= HandleLobbyStatus;
             BattleshipPlayer.OnGameStarted         -= HandleGameStarted;
@@ -60,6 +69,7 @@ namespace Battleship
         {
             _lobbyPanel.SetActive(true);
             if (_turnText != null) _turnText.gameObject.SetActive(false);
+            if (_disconnectButton != null) _disconnectButton.gameObject.SetActive(false);
         }
 
         // ────────────────────── Button callbacks ──────────────────────
@@ -95,6 +105,7 @@ namespace Battleship
         {
             _lobbyPanel.SetActive(false);
             if (_turnText != null) _turnText.gameObject.SetActive(true);
+            if (_disconnectButton != null) _disconnectButton.gameObject.SetActive(true);
         }
 
         void HandleTurnChanged(int currentTurn)
@@ -123,6 +134,19 @@ namespace Battleship
         {
             SetStatus("Opponent disconnected.");
             if (_turnText != null) _turnText.text = "Opponent disconnected.";
+        }
+
+        /// <summary>Disconnect from the current session and return to the lobby.</summary>
+        void OnDisconnectClicked()
+        {
+            if (NetworkServer.active && NetworkClient.isConnected)
+                NetworkManager.singleton.StopHost();
+            else if (NetworkClient.isConnected)
+                NetworkManager.singleton.StopClient();
+
+            // Reload the scene to reset everything cleanly
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }
 
         void SetStatus(string msg)
