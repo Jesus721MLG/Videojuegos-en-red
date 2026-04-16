@@ -26,10 +26,19 @@ namespace Battleship
 
         void OnMouseUp()
         {
-            if (!_tileChecked)
-                CheckForHit();
-            else
+            if (_tileChecked)
                 return;
+
+            // In online mode, send the click through the network instead of processing locally
+            if (NetworkManagerBattleship.IsOnlineMode)
+            {
+                OnlineTileHandler handler = FindObjectOfType<OnlineTileHandler>();
+                if (handler != null)
+                    handler.SendAttack(this);
+                return;
+            }
+
+            CheckForHit();
         }
 
         void ActivateHighlight(Sprite sprite) 
@@ -63,7 +72,27 @@ namespace Battleship
 
             RecordPlayedTile();
             _tileChecked = true;
-        }    
+        }
+
+        /// <summary>
+        /// Applies an attack result received from the server in online mode.
+        /// Updates the tile visual without triggering local game logic.
+        /// </summary>
+        public void ApplyOnlineResult(bool isHit)
+        {
+            if (_tileChecked) return;
+
+            if (isHit)
+            {
+                _mesh.material = _tileData.HitMaterial;
+            }
+            else
+            {
+                _mesh.material = _tileData.MissedMaterial;
+            }
+
+            _tileChecked = true;
+        }
 
         public void MarkEmptyTile()
         {

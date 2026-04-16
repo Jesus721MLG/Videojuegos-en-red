@@ -22,6 +22,13 @@ namespace Battleship
         public int CurrentOpponent => _currentOpponent;
         public GameUI UI => _ui;
         public ReplaySystem ReplaySystem => _replaySystem;
+
+        /// <summary>
+        /// Returns true if the game is running in online multiplayer mode.
+        /// In online mode, the Prepare state is skipped and turns are managed
+        /// by the OnlineGameManager instead of the local state machine.
+        /// </summary>
+        public bool IsOnlineMode => NetworkManagerBattleship.IsOnlineMode;
 #endregion
         
         private void Awake()
