@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f81922ebf4f78449b38e6244cfae830, type: 3}
+  m_Name: Regular Tile
+  m_EditorClassIdentifier: 
+  _defaultSprite: {fileID: 21300000, guid: d94db5eda9102774da7d5283eccadd14, type: 3}
+  _targetedSprite: {fileID: 21300000, guid: 4c4cb0192650d5946ab08fd344a8126f, type: 3}
+  _defaultMaterial: {fileID: 2100000, guid: f96ed87d6c9d97346b320a006dd3b59d, type: 2}
+  _missedMaterial: {fileID: 2100000, guid: c0f8f48c76fb5eb41a2854aa95ba505c, type: 2}
+  _hitMaterial: {fileID: 2100000, guid: 7872071727a62ea4db8583f2824fa31b, type: 2}
