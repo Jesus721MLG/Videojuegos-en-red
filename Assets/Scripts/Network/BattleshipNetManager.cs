@@ -56,14 +56,32 @@ namespace Battleship
             _players.Clear();
         }
 
+        public override void OnStopClient()
+        {
+            base.OnStopClient();
+            // Reset the static networked flag so local mode works correctly
+            // if the player returns to the main menu and starts a local game.
+            Tile.IsNetworked = false;
+        }
+
+        public override void OnStopServer()
+        {
+            base.OnStopServer();
+            Tile.IsNetworked = false;
+        }
+
         public override void OnServerAddPlayer(NetworkConnectionToClient conn)
         {
-            base.OnServerAddPlayer(conn);
-
-            var player = conn.identity.GetComponent<BattleshipPlayer>();
+            // Create the player manually so we can set SyncVars BEFORE
+            // spawning.  base.OnServerAddPlayer would spawn first, causing
+            // a race where the client sees PlayerIndex == -1.
+            GameObject playerObj = Instantiate(playerPrefab);
+            var player = playerObj.GetComponent<BattleshipPlayer>();
             player.PlayerIndex = _connectedPlayers;
             _players.Add(player);
             _connectedPlayers++;
+
+            NetworkServer.AddPlayerForConnection(conn, playerObj);
 
             Debug.Log($"[Server] Player {player.PlayerIndex} connected. Total: {_connectedPlayers}");
 
