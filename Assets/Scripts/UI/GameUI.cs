@@ -62,8 +62,11 @@ namespace Battleship
 
         void OnDisable()
         {
-            OnlineGameManager.OnOnlineTurnChanged -= HandleOnlineTurnChanged;
-            NetworkPlayer.OnOpponentDisconnected -= HandleOpponentDisconnected;
+            if (NetworkManagerBattleship.IsOnlineMode)
+            {
+                OnlineGameManager.OnOnlineTurnChanged -= HandleOnlineTurnChanged;
+                NetworkPlayer.OnOpponentDisconnected -= HandleOpponentDisconnected;
+            }
         }
 
         public void TogglePanel()

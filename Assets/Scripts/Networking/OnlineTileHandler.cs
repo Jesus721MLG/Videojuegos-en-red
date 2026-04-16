@@ -150,27 +150,11 @@ namespace Battleship
 
         /// <summary>
         /// Processes the attack result from the server and updates tile visuals.
+        /// The attackedBoardIndex is provided by the server for reliable state tracking.
         /// </summary>
-        void HandleAttackResult(int tileX, int tileZ, bool isHit, bool isShipDestroyed, int shipId)
+        void HandleAttackResult(int tileX, int tileZ, bool isHit, bool isShipDestroyed, int shipId, int attackedBoardIndex)
         {
             if (!_initialized) return;
-
-            // Determine which board was attacked
-            // The current turn player attacked the opponent's board
-            int currentTurn = OnlineGameManager.Instance != null ? OnlineGameManager.Instance.CurrentTurn : 0;
-
-            // If hit didn't change turn, current turn is still the attacker
-            // The attacked board is the opponent of whoever's turn it is
-            int attackedBoardIndex = currentTurn == 0 ? 1 : 0;
-
-            // After a miss, the turn has already changed, so we need to look at
-            // who was attacking before the change
-            if (!isHit)
-            {
-                // Turn already changed, so current turn is now the defender
-                // The attacked board is the current turn player's board
-                attackedBoardIndex = currentTurn;
-            }
 
             Tile[,] targetTiles = attackedBoardIndex == 0 ? _board0Tiles : _board1Tiles;
 

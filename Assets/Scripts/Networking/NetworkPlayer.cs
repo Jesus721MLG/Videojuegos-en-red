@@ -11,7 +11,7 @@ namespace Battleship
     /// </summary>
     public class NetworkPlayer : NetworkBehaviour
     {
-        public static event Action<int, int, bool, bool, int> OnAttackResultReceived;
+        public static event Action<int, int, bool, bool, int, int> OnAttackResultReceived;
         public static event Action<int> OnTurnChanged;
         public static event Action<int> OnGameWon;
         public static event Action<int> OnPlayerIndexAssigned;
@@ -96,11 +96,12 @@ namespace Battleship
 
         /// <summary>
         /// Server sends the attack result to all clients for visual updates.
+        /// Includes the attackedBoardIndex so clients don't need to infer it from turn state.
         /// </summary>
         [ClientRpc]
-        public void AttackResultClientRpc(int tileX, int tileZ, bool isHit, bool isShipDestroyed, int shipId)
+        public void AttackResultClientRpc(int tileX, int tileZ, bool isHit, bool isShipDestroyed, int shipId, int attackedBoardIndex)
         {
-            OnAttackResultReceived?.Invoke(tileX, tileZ, isHit, isShipDestroyed, shipId);
+            OnAttackResultReceived?.Invoke(tileX, tileZ, isHit, isShipDestroyed, shipId, attackedBoardIndex);
         }
 
         /// <summary>

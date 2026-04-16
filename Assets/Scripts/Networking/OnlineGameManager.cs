@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,8 +18,6 @@ namespace Battleship
         public static OnlineGameManager Instance { get; private set; }
 
         public static event Action<int> OnOnlineTurnChanged;
-        public static event Action<int> OnOnlineGameWon;
-        public static event Action<int, int, bool, bool, int> OnOnlineAttackResult;
         public static event Action OnOnlineGameReady;
 
         /// <summary>
@@ -42,7 +39,7 @@ namespace Battleship
             public int Hits;
             public bool IsDestroyed => Hits >= Length;
 
-            public List<Vector2Int> OccupiedCells = new List<Vector2Int>();
+            public List<Vector2Int> OccupiedCells { get; } = new List<Vector2Int>();
         }
 
         // Board state: boardData[playerIndex][x, z]
@@ -201,7 +198,7 @@ namespace Battleship
             }
 
             // Broadcast result to all clients
-            BroadcastAttackResult(tileX, tileZ, isHit, isDestroyed, shipId);
+            BroadcastAttackResult(tileX, tileZ, isHit, isDestroyed, shipId, defenderIndex);
 
             // Check win condition
             if (CheckWinCondition(targetShips))
@@ -228,14 +225,14 @@ namespace Battleship
             return true;
         }
 
-        void BroadcastAttackResult(int tileX, int tileZ, bool isHit, bool isDestroyed, int shipId)
+        void BroadcastAttackResult(int tileX, int tileZ, bool isHit, bool isDestroyed, int shipId, int attackedBoardIndex)
         {
             // Use the host player to broadcast
             foreach (var player in NetworkPlayer.AllPlayers)
             {
                 if (player != null)
                 {
-                    player.AttackResultClientRpc(tileX, tileZ, isHit, isDestroyed, shipId);
+                    player.AttackResultClientRpc(tileX, tileZ, isHit, isDestroyed, shipId, attackedBoardIndex);
                 }
             }
         }
